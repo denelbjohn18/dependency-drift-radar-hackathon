@@ -1,85 +1,92 @@
 # Dependency Drift Radar
-A local evidence dashboard for Python dependency migrations, deprecations and security investigation. Paste up to five package names or exact pins. SerpApi Google Search supplies two focused evidence searches per package. Links, search snippets, queries and retrieval timestamps stay together; Markdown export makes the research portable. A person can save a review decision for each lead and download a next-check brief.
 
-This is NOT a vulnerability scanner. It never claims a safe upgrade version, full-page verification, actual CVE applicability or semver compatibility. Snippet-only findings are always marked UNVERIFIED. Synthetic fixtures are prominently labeled and are not evidence of live API functionality.
+Python dependency search leads, then an explicit human review, then a traceable next-check brief.
 
-## Start on macOS (Python 3.10+)
+This is a local Flask app. It searches for migration, deprecation, and security-related references, keeps each lead attached to its link, snippet, query, and retrieval time, and lets a person save Keep, Dismiss, or Unsure. The next-check brief is the downloadable work list of those decisions. It does not install packages, crawl the linked pages, compare versions, or apply an upgrade.
+
+## Setup
+
+Python 3.10 or newer. Clone the repository and run:
+
 ```sh
-unzip dependency-drift-radar.zip
-cd dependency-drift-radar
+git clone https://github.com/denelbjohn18/dependency-drift-radar-hackathon
+cd dependency-drift-radar-hackathon
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
-python -m unittest discover -s tests -v
+python -m pip install --require-hashes -r requirements.txt
+python -m unittest discover -s tests
 python app.py
 ```
-Open http://127.0.0.1:8501. Try the synthetic fixtures first. No paid API, model, hosting or deployment is needed. Alternatively `uv sync --frozen`, `uv run python app.py` uses the included lockfile.
 
-## Live mode
-Create a free SerpApi account with helpdenel@gmail.com. The official pricing page currently lists $0,250searches/month,50/hour. Never upgrade, add a payment card or buy credits for this project.
-Enter the key without writing it to shell history:
-```sh
-read -s SERPAPI_API_KEY
-export SERPAPI_API_KEY
-python app.py
+Flask serves http://127.0.0.1:8501. Synthetic fixtures run from that page with no API key.
+
+### Commands checked on 2026-10-11
+
+Checked in the existing workspace checkout, with `.venv/bin/python` (Python 3.14.6) because that virtualenv was already present. `SERPAPI_API_KEY` was unset. No SerpApi search was made.
+
+- `python -m pip install --require-hashes -r requirements.txt` completed. The hashed requirements were already installed.
+- `python -m unittest discover -s tests` reported `Ran 52 tests in 0.244s` and `OK`.
+- `python app.py` was not started in this pass. Something was already listening on `127.0.0.1:8501`. A `GET /` returned HTTP 200 from `Werkzeug/3.1.9 Python/3.14.6` and the Dependency Drift Radar page. That request was not a search.
+
+Not run in this pass: `git clone https://github.com/denelbjohn18/dependency-drift-radar-hackathon`, `python3 -m venv .venv`, and `source .venv/bin/activate`. The checks above were made in the existing checkout before this commit.
+
+## Run modes
+
+The form has three modes. The requested mode and the evidence origin are recorded separately. Choosing a mode does not relabel where a lead came from.
+
+Synthetic fixtures work after clone with no key. They read `fixtures/search.json`, make no search-API call, and stay labeled synthetic. They have no real retrieval time.
+
+Saved cache only reads real responses already stored in the private `.cache/` directory and makes no network call. A clone leaves that cache behind: `.cache/` is gitignored. Without those files, saved-cache mode stops on a missing saved response and does not call the network.
+
+Live reads `SERPAPI_API_KEY` from the process environment and uses that account's free quota. The key is never a file in the repository. With no key, live mode stops and does not present a completed search. Selecting Live is not proof a network call happened. A hit in `.cache/` stays a cached search result and keeps the stored retrieval time.
+
+## Default workflow
+
+The shipped form starts with:
+
 ```
-Paste the API key when the terminal waits, then press Enter. Restarting the app loads the key. Do not write the key into source, a README, screenshots, video or chat. Use the secure vault link provided separately for any handoff.
-Choose Live SerpApi and scan ONE package first. Expect roughly80seconds for the second uncached query: the server paces calls below50/hour. Cached searches do not spend another request and show original retrieval time.
+pydantic==1.10.0
+fastapi==0.95.0
+```
 
-## Honest free-tier controls
-- Max5packages/scan,2queries/package (10 searches max).
-- Max20live request attempts per server process, including failures.
-- Server runs single-threaded and spaces uncached request attempts80seconds apart. During a live scan its page can wait, up to~12min for5packages. Start with1package for the demo.
-- Cache uses query hashes and stores allowlisted result fields only. It never stores keys or provider metadata.
-- Restarting resets process budget. It does not reset SerpApi monthly/hourly quota. Check your real account dashboard before live runs.
-- .cache persists older evidence, not current truth. Delete .cache only intentionally; this spends searches again. Cached retrieval timestamps remain visible.
-- If requests fail or quota ends, stop. No retries, paid fallback or additional LLM is used.
+Each package gets two queries: a documentation-scoped migration and deprecation search, then a broader security-advisory and release-notes search. The documentation scope for Flask is `flask.palletsprojects.com`. The same table covers FastAPI, Pydantic, Django, Requests, NumPy, Pandas, and SQLAlchemy. Any other name uses a PyPI project scope for the first query. The limit is five packages. The first exact pin wins when a name is repeated. A name without `==` is an unknown installed version. A version range is rejected.
 
-## Scope and limitations
-Python simple exact pins and names only. No requirements includes, URLs, editables, ranges or environment markers. First pin wins for duplicate package names. Known documentation domains supported for FastAPI,Pydantic,Django,Flask,Requests,NumPy,Pandas,SQLAlchemy; other packages use a PyPI-scoped first search and a broader second search. Search snippets may be truncated, stale, misleading or irrelevant. Domain labels are navigation aids, not verified publisher identities. Evidence is research for a human to verify, not upgrade advice.
+Cards show the source link, the snippet, the query, the retrieval time, and the evidence origin. Search snippets stay `UNVERIFIED: search snippet only`. A person saves a review on a card. Download next-check brief writes the decisions beside that provenance.
 
-The app searches source references; it does not fetch or execute package code, crawl linked pages or install user requirements. It binds localhost only, uses CSRF form tokens and escapes displayed text. Do not expose the development server publicly. Cached queries may reveal dependency names; do not include confidential/private package names. Export is plain Markdown, not executable content.
+The recorded default run is [docs/OUTCOME_PROOF.md](docs/OUTCOME_PROOF.md). The brief from that run is [docs/outcome-next-check-brief.md](docs/outcome-next-check-brief.md). It used Saved cache only, with no search key. The kept lead was [pydantic issue 9768](https://github.com/pydantic/pydantic/issues/9768), from `site:docs.pydantic.dev pydantic 1.10.0 migration deprecation`, retrieved `2026-10-10T09:29:23.321816+00:00`. The page compares multiple-parent `extra` configuration: its v1 sample prints pydantic 1.10.13 and its v2 sample prints pydantic 2.7.2. Applicability to pin 1.10.0 was left not established. The stored `site:` results for that scan were not on `docs.pydantic.dev` or `fastapi.tiangolo.com`. The FastAPI default top 3 still had no relevant lead: a release-date discussion, a release-notes page whose fetch was empty, and a short repository stub. Those three stayed listed.
 
-## Case study: finding a Pydantic migration lead
-Input pin: `pydantic==1.10.0`. That pin is investigation context only.
+## Targeted follow-up
 
-This lead comes from one cached targeted search, not from the default two-query package scan. Query: `Pydantic official Migration Guide V1 V2 model_dump dict`. Retrieved: `2026-10-10T10:13:33.575558+00:00`.
+The shipped screen has no custom-query field and no targeted-follow-up control. The default scan above did not need one.
 
-Organic result used here:
-- Title: Automated migration tool for Pydantic v1 to v2 #12772
-- Link: https://github.com/pydantic/pydantic/discussions/12772
-- Snippet, UNVERIFIED search snippet only: First off, I want to thank the Pydantic team for the excellent migration guide. It is thorough and covers virtually every breaking change between v1 and v2.
+A separate manually cached query, `Pydantic official Migration Guide V1 V2 model_dump dict`, retrieved `2026-10-10T10:13:33.575558+00:00`, is stored in the private cache and labeled in [docs/EVALUATION.md](docs/EVALUATION.md). It is not output from the default two-query form.
 
-PyPI lists both Homepage and Source for pydantic as https://github.com/pydantic/pydantic. The result URL is a discussion in that repository. That locates the page. It does not make the post official Pydantic advice, and the author's role was not checked.
+## Evaluation sample
 
-Page-checked finding: the discussion post says, "First off, I want to thank the Pydantic team for the excellent migration guide. It is thorough and covers virtually every breaking change between v1 and v2." The words "migration guide" link to https://docs.pydantic.dev/latest/migration/. The same post says the author built a tool named Codeshift and lists `.dict()` to `.model_dump()` among mechanical V1-to-V2 renames. The post does not mention bump-pydantic. The narrow conclusion is that this official-repository discussion is a lead to migration documentation and to an automated migration tool described by the discussion author.
+[docs/EVALUATION.md](docs/EVALUATION.md) records nine leads: the top 3 from three cases. The labels are relevant lead 3, irrelevant lead 2, and uncertain 4. They were Cursor-assisted manual labels recorded in this workspace on 2026-10-11, not an independent review by the project owner. The sample is those nine leads. Uncertain stays its own label. Pin applicability stays not established on every row. Search snippets stay unverified. A separate note in that file records order after a ranking change; it does not replace the 3/2/4 counts.
 
-Follow-on page research, not a SerpApi organic result: opening that guide link resolved to https://pydantic.dev/docs/validation/latest/get-started/migration/ ("Migration Guide | Pydantic Docs"). Its rename table has columns Pydantic V1 and Pydantic V2, with the row `dict()` | `model_dump()`. That guide URL is not in the cached organic results for this query.
+## Reviews
 
-Discovery limitation: generic package queries produced third-party noise, and this targeted query returned a translated mirror and other third-party pages before this official-repository discussion. Retrieval labels do not mean verified facts.
+Each lead starts unreviewed. Keep means worth investigating. It does not verify the snippet and it does not establish applicability. Dismiss means deprioritized. It does not mean fixed or resolved. Unsure stays unresolved.
 
-Pin applicability: not established. This does not show that a tool supports exactly 1.10.0, that this pin is vulnerable or deprecated, that an upgrade is required, or that it is incompatible with FastAPI 0.95.0. No automated migration was run.
+Version applicability stays "not established" until a person saves "reviewer says applicable" or "reviewer says not applicable" with a source URL and a rationale. That pair is a reviewer-entered assessment. The recorded outcome left applicability not established. The fields are not filled from the pin, the query, or the snippet.
 
-Practical next step: read the linked guide and inspect any tool on its own project page, then test a migration on a separate branch. This research app does not perform that migration.
+Reviews are stored in `.reviews/` on this machine. That directory is gitignored. If a later result changes a lead's title or snippet, the card shows "needs re-review: evidence changed" and the lead returns to unresolved until a person saves it again. A lead missing from a later search is not dismissed.
 
-## Review queue
-Each deduped lead starts unreviewed. Saving Keep, Dismiss, or Unsure is a human decision. Keep means the lead is worth investigating. It is not an upgrade approval and it is not proof of a vulnerability. Dismiss means deprioritized. It is not fixed or resolved. Unsure stays unresolved. A snippet is never promoted to a verified claim.
+The next-check brief is a Markdown work list. It is not a vulnerability report.
 
-Version applicability stays "not established" until a person saves "reviewer says applicable" or "reviewer says not applicable" with a source URL and a rationale. That pair is a reviewer-entered assessment, not automatic verification. The fields are not filled from the pin, query, or snippet. Search snippets stay UNVERIFIED. Synthetic fixtures stay SYNTHETIC.
+## Limits that stay on every lead
 
-Reviews are stored in `.reviews/` on this machine, separate from `.cache/`. They are gitignored and not synced. Restarting the app and rerunning a cached search keeps the decision. The card shows the retrieval time that decision was saved against. If a later result changes that lead's title or snippet, the saved decision and note remain, the card shows "needs re-review: evidence changed", and the lead returns to Unresolved until a person saves it again. A lead missing from a later search is not dismissed.
+Freshness is the age of the retrieved evidence. It is not proof that the page or the claim is current. There is no expiry cutoff. A missing or invalid retrieval timestamp stays unknown. Freshness does not apply to a synthetic fixture.
 
-The next-check brief is a Markdown download of those decisions beside the original source, queries, snippets, and retrieval times. It is a work list, not a vulnerability report.
+The process allows 20 live attempts, including failures, and spaces uncached live attempts 80 seconds apart. Restarting the process resets that counter. It does not reset the SerpApi account quota. There is no automatic retry, paid fallback, or upgrade.
 
-TODO: capture a real screenshot from the app of this cached result, including the source, the exact query, the retrieval timestamp, and the UNVERIFIED label. No screenshot is included. The targeted search was a manual investigation check, not output from the default two-query package scan, and the current screen has no custom-query control that would show this cache entry.
+The development server binds `127.0.0.1` only. Cached queries can reveal package names. Leave confidential names out of the form, and leave the API key out of source, screenshots, video, and chat.
 
-## Before submitting
-Run a live scan with your real key, verify links and screenshots, record<3min screen demo with local app working. Synthetic fixture runs alone do NOT prove meaningful SerpApi functionality. Review docs/SUBMISSION.md, replace placeholders, verify repo+demo links in incognito, and only publish or submit after explicit approval.
+## Tests
 
-## Original work and AI disclosure
-Prepared for the SerpApi India Hackathon 2026 on October9. New project. AI assisted implementation, tests, docs and demo script. The participant must review, run and stand behind it. See docs/AI_DISCLOSURE.md and docs/DEMO.md.
+On 2026-10-11, `python -m unittest discover -s tests` in this checkout reported 52 tests, OK, on Python 3.14.6. See [docs/VERIFICATION.md](docs/VERIFICATION.md).
 
-Official sources:
-https://serpapi.github.io/serpapi-india-hackathon-2026/rules.html
-https://serpapi.github.io/serpapi-india-hackathon-2026/terms.html
-https://serpapi.com/pricing
+Draft entry text is in [docs/SUBMISSION.md](docs/SUBMISSION.md). The recording guide is [docs/DEMO.md](docs/DEMO.md). AI-tool disclosure is the draft in [docs/AI_DISCLOSURE.md](docs/AI_DISCLOSURE.md).
+
+Rules and terms: https://serpapi.github.io/serpapi-india-hackathon-2026/rules.html and https://serpapi.github.io/serpapi-india-hackathon-2026/terms.html

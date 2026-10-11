@@ -125,6 +125,12 @@ def signal_labels(snippets):
     labels=[x for x,term in (("migration","migrat"),("deprecation","deprecat"),("security mention","security")) if term in text]
     return ", ".join(labels) or "general lead"
 
+def _task_relevant(row):
+    """Migration or deprecation cues in the title or snippet. Source tier is not a cue."""
+    snippets=[item.get("snippet") or "" for item in row.get("provenance") or []]
+    text="\n".join([row.get("title") or "", *snippets]).lower()
+    return "migrat" in text or "deprecat" in text
+
 def _tracking_param(name):
     lowered=name.lower()
     return lowered.startswith("utm_") or lowered in _TRACKING
@@ -243,7 +249,9 @@ def finalize_evidence(rows):
         for item in row["provenance"]:
             if not any(_same_provenance(item, have) for have in dest["provenance"]): dest["provenance"].append(item)
         _refresh(dest)
-    merged.sort(key=lambda row: (row["relevance"]=="unmatched lead", SOURCE_TIER[row["source_category"]]))
+    # Unmatched stays last. Within a relevance band, migration/deprecation text
+    # precedes a general lead, then source tier breaks ties. Order is stable.
+    merged.sort(key=lambda row: (row["relevance"]=="unmatched lead", 0 if _task_relevant(row) else 1, SOURCE_TIER[row["source_category"]]))
     return merged
 
 def scan_summary(requested_mode, rows):

@@ -49,7 +49,7 @@ class RadarTests(unittest.TestCase):
   self.assertEqual(queries('pydantic','1.10.0'),['site:docs.pydantic.dev pydantic 1.10.0 migration deprecation','pydantic 1.10.0 security advisory release notes'])
  def test_official_host_outranks_third_party_and_repo(self):
   payload={'query':'q','retrieved_at':'t','results':[
-   {'title':'Blog','link':'https://blog.example/post','snippet':'pydantic migration notes'},
+   {'title':'Blog','link':'https://blog.example/post','snippet':'pydantic notes'},
    {'title':'Issue','link':'https://github.com/pydantic/pydantic/issues/1','snippet':'question'},
    {'title':'Docs','link':'https://docs.pydantic.dev/migration','snippet':'guide'}]}
   rows=finalize_evidence(evidence_rows(payload,'pydantic','1.10.0'))
@@ -163,4 +163,22 @@ class RadarTests(unittest.TestCase):
   self.assertEqual(ctx.verify_mode,ssl.CERT_REQUIRED)
   self.assertTrue(ctx.check_hostname)
   self.assertGreater(ctx.cert_store_stats().get('x509_ca',0),0)
+ def test_release_date_docs_do_not_outrank_task_relevant_lead(self):
+  payload={'query':'q','retrieved_at':'t','results':[
+   {'title':'how can I know when each version of fastapi release was out','link':'https://fastapi.tiangolo.com/release-notes/','snippet':'The release notes do not include when each version was out.'},
+   {'title':'Migrate model configuration','link':'https://example.com/fastapi-migration-note','snippet':'fastapi migration and deprecation notes for extra configuration'}]}
+  rows=finalize_evidence(evidence_rows(payload,'fastapi','0.95.0'))
+  self.assertEqual(rows[0]['url'],'https://example.com/fastapi-migration-note')
+  self.assertEqual(rows[0]['relevance'],'package-matched lead')
+  self.assertEqual(rows[0]['source_category'],'Other source')
+  self.assertEqual(rows[1]['source_category'],'Package documentation')
+  self.assertEqual(rows[1]['url'],'https://fastapi.tiangolo.com/release-notes/')
+  self.assertTrue(all(r['applicability']=='Pin applicability: not established' for r in rows))
+  self.assertTrue(all(r['status']=='UNVERIFIED: search snippet only' for r in rows))
+ def test_same_task_band_still_prefers_documentation_host(self):
+  payload={'query':'q','retrieved_at':'t','results':[
+   {'title':'Third party','link':'https://blog.example/migrate','snippet':'fastapi migration notes'},
+   {'title':'Docs','link':'https://fastapi.tiangolo.com/tutorial/migration/','snippet':'fastapi migration notes'}]}
+  rows=finalize_evidence(evidence_rows(payload,'fastapi','0.95.0'))
+  self.assertEqual([r['source_category'] for r in rows],['Package documentation','Other source'])
 if __name__=='__main__':unittest.main()

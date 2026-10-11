@@ -61,3 +61,29 @@ Procedure: manual targeted search, not the default package scan. Query: `Pydanti
 3. Uncertain. [Russian migration page on pydantic.com.cn](https://pydantic.com.cn/ru/migration/). The page is a V1-to-V2 migration text and mentions bump-pydantic. This pass did not verify the mirror as an official Pydantic publication. It is not the docs host the app treats as package documentation.
 
 Machine-readable copies: `docs/evaluation.json` and `docs/evaluation.csv`.
+
+## Separate check after a ranking change, 2026-10-11
+
+This section does not replace the nine-lead labels above. Those labels stay on the top 3 order recorded before the ranking change. The historical counts remain relevant lead 3, irrelevant lead 2, uncertain 4.
+
+The ranker now places a lead whose title or snippet contains migration or deprecation wording ahead of a general lead. Source category is only the tie-breaker. The FastAPI default scan was not used to choose that rule. It was checked after the change.
+
+### pydantic==1.10.0 default package scan
+
+Top 3 unchanged: issue 9768, the LinkML issue, the python-on-whales issue. Labels unchanged: relevant lead, uncertain, relevant lead.
+
+### fastapi==0.95.0 default package scan, held out
+
+Top 3 unchanged: the release-date discussion, the full-stack template notes, the repository URL with a ref parameter. Labels unchanged: irrelevant lead, uncertain, uncertain. This top 3 still has no relevant lead.
+
+### Targeted query, not the default scan
+
+Query: `Pydantic official Migration Guide V1 V2 model_dump dict`. Retrieved `2026-10-10T10:13:33.575558+00:00`.
+
+Before: Types docs (irrelevant lead), discussion 12772 (relevant lead), the pydantic.com.cn page (uncertain).
+
+After: discussion 12772 (relevant lead, same page as before), the pydantic.com.cn page (uncertain, same page as before), then the LangChain forum result that was previously outside this top 3.
+
+The LangChain fetch showed one reply, post 10, which tells the reader to raise a langchain dependency. The start of that thread was not in the fetch. Label for this new third place: uncertain. It is not a finding about pin 1.10.0.
+
+No new combined score is taken from these three cases. Uncertain stays separate from relevant and irrelevant.
