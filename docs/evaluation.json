@@ -1,0 +1,335 @@
+{
+  "description": "Manual labels for the top 3 ranked leads in each listed case. This is not an overall search-accuracy score, a time-savings claim, or a statistical benchmark.",
+  "evaluator": "Cursor-assisted manual labels recorded in this workspace. Not an independent review by the project owner.",
+  "evaluation_date": "2026-10-11",
+  "sample_size": 9,
+  "counts_among_evaluated_top3": {
+    "relevant lead": 3,
+    "irrelevant lead": 2,
+    "uncertain": 4
+  },
+  "synthetic_fixtures": {
+    "path": "fixtures/search.json",
+    "label": "SYNTHETIC",
+    "included_in_these_counts": false
+  },
+  "measurements": {
+    "cached_response_files": 6,
+    "stored_organic_results": 30,
+    "distinct_cached_queries": 6,
+    "cache_retrieval_timestamps": [
+      "2026-10-10T09:29:23.321816+00:00",
+      "2026-10-10T09:30:44.213886+00:00",
+      "2026-10-10T09:32:05.434840+00:00",
+      "2026-10-10T09:33:26.421452+00:00",
+      "2026-10-10T10:13:33.575558+00:00",
+      "2026-10-10T10:15:18.166715+00:00"
+    ],
+    "api_calls": "not recorded",
+    "latency": "not recorded",
+    "cost": "not recorded",
+    "upstream_calls_made_for_this_file": 0,
+    "note": "A planned query count is not evidence that an API call happened. These figures are counts of files already in .cache. Cache reads did not spend a new search."
+  },
+  "cases": [
+    {
+      "case_id": "pydantic-default-scan",
+      "procedure": "default-package-scan",
+      "package": "pydantic",
+      "input_pin": "1.10.0",
+      "queries": [
+        "site:docs.pydantic.dev pydantic 1.10.0 migration deprecation",
+        "pydantic 1.10.0 security advisory release notes"
+      ],
+      "deduped_leads": 10,
+      "ranked_leads": 10,
+      "unmatched_leads": 0,
+      "raw_results": 10,
+      "top3": [
+        {
+          "case_id": "pydantic-default-scan",
+          "procedure": "default-package-scan",
+          "package": "pydantic",
+          "input_pin": "1.10.0",
+          "rank": 1,
+          "title": "Inconsistent behavior with extra configuration when ...",
+          "url": "https://github.com/pydantic/pydantic/issues/9768",
+          "source_category": "Package repository",
+          "relevance_label": "package-matched lead",
+          "status": "UNVERIFIED: search snippet only",
+          "pin_applicability": "Pin applicability: not established",
+          "queries": [
+            "site:docs.pydantic.dev pydantic 1.10.0 migration deprecation"
+          ],
+          "retrieved_at": [
+            "2026-10-10T09:29:23.321816+00:00"
+          ],
+          "cached": [
+            true
+          ],
+          "snippet": "I am migrating from Pydantic v1 to v2 and have encountered some inconsistencies and validation issues, particularly with the extra configuration ...",
+          "evaluator": "Cursor-assisted manual labels recorded in this workspace. Not an independent review by the project owner.",
+          "evaluation_date": "2026-10-11",
+          "human_label": "relevant lead",
+          "page_read": "read",
+          "rationale": "The GitHub issue in pydantic/pydantic describes a v1-to-v2 difference in extra configuration when models inherit from more than one parent. A reply says a migration-guide note could be added. The page does not establish that pydantic 1.10.0 is vulnerable or must be upgraded. The reply author's maintainer role was not verified."
+        },
+        {
+          "case_id": "pydantic-default-scan",
+          "procedure": "default-package-scan",
+          "package": "pydantic",
+          "input_pin": "1.10.0",
+          "rank": 2,
+          "title": "Drop support for deprecated pydantic <2 \u00b7 Issue #2681",
+          "url": "https://github.com/linkml/linkml/issues/2681",
+          "source_category": "Other source",
+          "relevance_label": "package-matched lead",
+          "status": "UNVERIFIED: search snippet only",
+          "pin_applicability": "Pin applicability: not established",
+          "queries": [
+            "site:docs.pydantic.dev pydantic 1.10.0 migration deprecation"
+          ],
+          "retrieved_at": [
+            "2026-10-10T09:29:23.321816+00:00"
+          ],
+          "cached": [
+            true
+          ],
+          "snippet": "We have deprecated Pydantic <2 support for a little while now. It is time to drop support for our 1.10.0 release.",
+          "evaluator": "Cursor-assisted manual labels recorded in this workspace. Not an independent review by the project owner.",
+          "evaluation_date": "2026-10-11",
+          "human_label": "uncertain",
+          "page_read": "read",
+          "rationale": "The LinkML issue says that project deprecated Pydantic <2 and plans to drop it for LinkML's own 1.10.0 release. The version number matches the input pin only as text. It is not evidence about the pydantic==1.10.0 pin, and it is not Pydantic's migration guide."
+        },
+        {
+          "case_id": "pydantic-default-scan",
+          "procedure": "default-package-scan",
+          "package": "pydantic",
+          "input_pin": "1.10.0",
+          "rank": 3,
+          "title": "Migrate to pydantic v2 \u00b7 Issue #452 \u00b7 gabrieldemarmiesse ...",
+          "url": "https://github.com/gabrieldemarmiesse/python-on-whales/issues/452",
+          "source_category": "Other source",
+          "relevance_label": "package-matched lead",
+          "status": "UNVERIFIED: search snippet only",
+          "pin_applicability": "Pin applicability: not established",
+          "queries": [
+            "site:docs.pydantic.dev pydantic 1.10.0 migration deprecation"
+          ],
+          "retrieved_at": [
+            "2026-10-10T09:29:23.321816+00:00"
+          ],
+          "cached": [
+            true
+          ],
+          "snippet": "Most changes from pydantic v1 to v2 involves renames, which will work but give DeprecationWarnings when using v2.",
+          "evaluator": "Cursor-assisted manual labels recorded in this workspace. Not an independent review by the project owner.",
+          "evaluation_date": "2026-10-11",
+          "human_label": "relevant lead",
+          "page_read": "read",
+          "rationale": "The python-on-whales issue discusses migrating that project to Pydantic v2, including renames and deprecation warnings. It is a third-party migration lead, not Pydantic project documentation, and it does not establish applicability to pin 1.10.0."
+        }
+      ]
+    },
+    {
+      "case_id": "fastapi-default-scan",
+      "procedure": "default-package-scan",
+      "package": "fastapi",
+      "input_pin": "0.95.0",
+      "queries": [
+        "site:fastapi.tiangolo.com fastapi 0.95.0 migration deprecation",
+        "fastapi 0.95.0 security advisory release notes"
+      ],
+      "deduped_leads": 10,
+      "ranked_leads": 10,
+      "unmatched_leads": 0,
+      "raw_results": 10,
+      "top3": [
+        {
+          "case_id": "fastapi-default-scan",
+          "procedure": "default-package-scan",
+          "package": "fastapi",
+          "input_pin": "0.95.0",
+          "rank": 1,
+          "title": "how can I know when each version of fastapi release was ...",
+          "url": "https://github.com/fastapi/fastapi/discussions/6119",
+          "source_category": "Package repository",
+          "relevance_label": "package-matched lead",
+          "status": "UNVERIFIED: search snippet only",
+          "pin_applicability": "Pin applicability: not established",
+          "queries": [
+            "site:fastapi.tiangolo.com fastapi 0.95.0 migration deprecation"
+          ],
+          "retrieved_at": [
+            "2026-10-10T09:32:05.434840+00:00"
+          ],
+          "cached": [
+            true
+          ],
+          "snippet": "The release notes do not include when each version was out. I would really like to know when 0.78.0 was released? and when the other releases were out?",
+          "evaluator": "Cursor-assisted manual labels recorded in this workspace. Not an independent review by the project owner.",
+          "evaluation_date": "2026-10-11",
+          "human_label": "irrelevant lead",
+          "page_read": "read",
+          "rationale": "The FastAPI discussion asks when releases such as 0.78.0 were published. The page does not discuss migration, deprecation, or pin 0.95.0. Being in the FastAPI repository does not make the topic relevant to this investigation."
+        },
+        {
+          "case_id": "fastapi-default-scan",
+          "procedure": "default-package-scan",
+          "package": "fastapi",
+          "input_pin": "0.95.0",
+          "rank": 2,
+          "title": "full-stack-fastapi-template/release-notes.md at master",
+          "url": "https://github.com/fastapi/full-stack-fastapi-template/blob/master/release-notes.md",
+          "source_category": "Other source",
+          "relevance_label": "package-matched lead",
+          "status": "UNVERIFIED: search snippet only",
+          "pin_applicability": "Pin applicability: not established",
+          "queries": [
+            "site:fastapi.tiangolo.com fastapi 0.95.0 migration deprecation"
+          ],
+          "retrieved_at": [
+            "2026-10-10T09:32:05.434840+00:00"
+          ],
+          "cached": [
+            true
+          ],
+          "snippet": "Full-stack web application template with FastAPI, React, SQLModel, PostgreSQL, Vite, Tailwind CSS, shadcn/ui, FastAPI Cloud, and Docker Compose.",
+          "evaluator": "Cursor-assisted manual labels recorded in this workspace. Not an independent review by the project owner.",
+          "evaluation_date": "2026-10-11",
+          "human_label": "uncertain",
+          "page_read": "inaccessible",
+          "rationale": "The cached result points at the full-stack-fastapi-template release notes. A page fetch returned an empty document, so the lead was not judged from page text. The cached snippet describes that template, which is a different project from the fastapi package."
+        },
+        {
+          "case_id": "fastapi-default-scan",
+          "procedure": "default-package-scan",
+          "package": "fastapi",
+          "input_pin": "0.95.0",
+          "rank": 3,
+          "title": "fastapi/fastapi at blog.kiwifarm.it",
+          "url": "https://github.com/tiangolo/fastapi?ref=blog.kiwifarm.it",
+          "source_category": "Other source",
+          "relevance_label": "package-matched lead",
+          "status": "UNVERIFIED: search snippet only",
+          "pin_applicability": "Pin applicability: not established",
+          "queries": [
+            "site:fastapi.tiangolo.com fastapi 0.95.0 migration deprecation"
+          ],
+          "retrieved_at": [
+            "2026-10-10T09:32:05.434840+00:00"
+          ],
+          "cached": [
+            true
+          ],
+          "snippet": "The key features are: Fast: Very high performance, on par with NodeJS and Go (thanks to Starlette and Pydantic). One of the fastest Python frameworks available.",
+          "evaluator": "Cursor-assisted manual labels recorded in this workspace. Not an independent review by the project owner.",
+          "evaluation_date": "2026-10-11",
+          "human_label": "uncertain",
+          "page_read": "inaccessible",
+          "rationale": "The cached URL is the fastapi repository with a ref query parameter. The page fetch returned only a short repository stub, not the README body, so the cached feature-list snippet was not confirmed against the page."
+        }
+      ]
+    },
+    {
+      "case_id": "pydantic-targeted-migration-query",
+      "procedure": "manual-targeted-search",
+      "package": "pydantic",
+      "input_pin": "1.10.0",
+      "queries": [
+        "Pydantic official Migration Guide V1 V2 model_dump dict"
+      ],
+      "deduped_leads": 5,
+      "ranked_leads": 5,
+      "unmatched_leads": 0,
+      "raw_results": 5,
+      "top3": [
+        {
+          "case_id": "pydantic-targeted-migration-query",
+          "procedure": "manual-targeted-search",
+          "package": "pydantic",
+          "input_pin": "1.10.0",
+          "rank": 1,
+          "title": "Types | Pydantic Docs",
+          "url": "https://pydantic.dev/docs/validation/latest/concepts/types/",
+          "source_category": "Package documentation",
+          "relevance_label": "package-matched lead",
+          "status": "UNVERIFIED: search snippet only",
+          "pin_applicability": "Pin applicability: not established",
+          "queries": [
+            "Pydantic official Migration Guide V1 V2 model_dump dict"
+          ],
+          "retrieved_at": [
+            "2026-10-10T10:13:33.575558+00:00"
+          ],
+          "cached": [
+            true
+          ],
+          "snippet": "Pydantic uses types to define how validation and serialization should be performed. Built-in and standard library types (such as int , str , date ) can be ...",
+          "evaluator": "Cursor-assisted manual labels recorded in this workspace. Not an independent review by the project owner.",
+          "evaluation_date": "2026-10-11",
+          "human_label": "irrelevant lead",
+          "page_read": "read",
+          "rationale": "The page is Pydantic documentation about types and validation. The portion read does not present the V1-to-V2 migration guide. Official-host ranking explains why it is first; it does not make the page a migration lead for this query."
+        },
+        {
+          "case_id": "pydantic-targeted-migration-query",
+          "procedure": "manual-targeted-search",
+          "package": "pydantic",
+          "input_pin": "1.10.0",
+          "rank": 2,
+          "title": "Automated migration tool for Pydantic v1 to v2 #12772",
+          "url": "https://github.com/pydantic/pydantic/discussions/12772",
+          "source_category": "Package repository",
+          "relevance_label": "package-matched lead",
+          "status": "UNVERIFIED: search snippet only",
+          "pin_applicability": "Pin applicability: not established",
+          "queries": [
+            "Pydantic official Migration Guide V1 V2 model_dump dict"
+          ],
+          "retrieved_at": [
+            "2026-10-10T10:13:33.575558+00:00"
+          ],
+          "cached": [
+            true
+          ],
+          "snippet": "First off, I want to thank the Pydantic team for the excellent migration guide. It is thorough and covers virtually every breaking change between v1 and v2.",
+          "evaluator": "Cursor-assisted manual labels recorded in this workspace. Not an independent review by the project owner.",
+          "evaluation_date": "2026-10-11",
+          "human_label": "relevant lead",
+          "page_read": "previously checked in README case study",
+          "rationale": "The cached result is a discussion in the pydantic/pydantic repository. The existing case study records that the post thanks the Pydantic team for a migration guide and links to migration documentation, and that the discussion author describes a tool named Codeshift. The author's role was not verified, so the author is not called a maintainer. Pin applicability remains not established. This result is from the manual targeted query, not the default two-query package scan."
+        },
+        {
+          "case_id": "pydantic-targeted-migration-query",
+          "procedure": "manual-targeted-search",
+          "package": "pydantic",
+          "input_pin": "1.10.0",
+          "rank": 3,
+          "title": "\u0420\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e \u043f\u043e \u043c\u0438\u0433\u0440\u0430\u0446\u0438\u0438 - \u0414\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u044f Pydantic",
+          "url": "https://pydantic.com.cn/ru/migration/",
+          "source_category": "Other source",
+          "relevance_label": "package-matched lead",
+          "status": "UNVERIFIED: search snippet only",
+          "pin_applicability": "Pin applicability: not established",
+          "queries": [
+            "Pydantic official Migration Guide V1 V2 model_dump dict"
+          ],
+          "retrieved_at": [
+            "2026-10-10T10:13:33.575558+00:00"
+          ],
+          "cached": [
+            true
+          ],
+          "snippet": "This page provides a guide highlighting the most important changes to help you migrate your code from Pydantic V1 to Pydantic V2. Install Pydantic V2\u00b6. Pydantic ...",
+          "evaluator": "Cursor-assisted manual labels recorded in this workspace. Not an independent review by the project owner.",
+          "evaluation_date": "2026-10-11",
+          "human_label": "uncertain",
+          "page_read": "read",
+          "rationale": "The page on pydantic.com.cn is a Russian V1-to-V2 migration text and mentions bump-pydantic. It is not on the docs.pydantic.dev host used by the app's documentation check. This pass did not verify that the mirror is an official Pydantic publication, so it stays uncertain rather than an official-source finding."
+        }
+      ]
+    }
+  ]
+}

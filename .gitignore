@@ -1,0 +1,7 @@
+.venv/
+.cache/
+.reviews/
+__pycache__/
+*.pyc
+.env
+*.zip

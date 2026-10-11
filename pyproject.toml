@@ -1,0 +1,6 @@
+[project]
+name = "dependency-drift-radar"
+version = "0.1.0"
+description = "A budgeted, source-linked dependency evidence radar"
+requires-python = ">=3.10"
+dependencies = ["Flask==3.1.2"]
